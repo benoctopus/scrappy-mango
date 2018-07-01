@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const ArticleSchema = new mongoose.Schema({
+  pid: {
+    type: String,
+    required: true,
+    unique: true
+  },
   title: {
     type: String,
     required: true
@@ -16,6 +21,10 @@ const ArticleSchema = new mongoose.Schema({
   note: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Note'
+  },
+  timestamp: {
+    type: Number,
+    required: true,
   },
   created: {
     type: Number,

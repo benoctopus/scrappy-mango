@@ -5,7 +5,7 @@ const logger = require('morgan');
 const apiRoutes = require('./controllers/apiRoutes');
 const Orm = require('./db/Orm');
 
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 const app = express();
 const db = new Orm();
 
@@ -17,7 +17,7 @@ app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, '../../dist')));
 app.use('/api', apiRoutes(db));
 
-app.listen(port, () => {
-  console.log(`listening on port ${port}`);
-  console.log(`localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`listening on PORT ${PORT}`);
+  console.log(`localhost:${PORT}`);
 });

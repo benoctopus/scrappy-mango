@@ -17,8 +17,10 @@ module.exports = class Orm extends Scraper {
       this.Article.find(
         { subReddit },
         [
+          'pid',
           'title',
           'link',
+          'subReddit',
           'created'
         ],
         {

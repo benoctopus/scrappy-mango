@@ -4,7 +4,7 @@ const cherio = require('cherio');
 module.exports = class Scraper {
   constructor() {
     this.oldReddit = 'https://old.reddit.com/r/';
-    this.newReddit = 'https://reddit.com/r/';
+    this.newReddit = 'https://reddit.com';
   }
   async scrape(subReddit = 'popular') {
     try {
@@ -28,22 +28,26 @@ module.exports = class Scraper {
   }
   parseDOM($, subReddit) {
     return new Promise((resolve) => {
-      $('.top-matter > .title').each((i, element) => {
+      $('.thing').each((i, element) => {
         const result = {};
-        result.title = $(element)
-          .children('a')
+        const pid = $(element).attr('id');
+        result.pid = pid.replace(/thing_/g, '');
+        result.timestamp = $(element).attr('data-timestamp');
+        result.title = $(`#${pid} .title > a`)
           .text();
-        result.link = $(element)
-          .children('a')
+        result.link = $(`#${pid} .title > a`)
           .attr('href');
+        if (result.link.includes('/r/')) {
+          result.link = this.newReddit + result.link;
+        }
         result.subReddit = subReddit;
         this.Article.create(result)
           .then((dbArticle) => {
-            // console.log(dbArticle);
+            console.log(dbArticle);
           })
           .catch((err) => {
             // if (err) throw new Error(err);
-            // console.log(result);
+            console.log(`dubplicate key: ${result.pid}`);
           });
       });
       resolve();
