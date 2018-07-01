@@ -2,13 +2,12 @@ const express = require('express');
 const parser = require('body-parser');
 const path = require('path');
 const logger = require('morgan');
-const dataRoutes = require('./controllers/dataController');
-const db = require('./models');
-const Scraper = require('./scripts/Scraper');
+const apiRoutes = require('./controllers/apiRoutes');
+const Orm = require('./db/Orm');
 
 const port = process.env.PORT || 8080;
 const app = express();
-const scraper = new Scraper(db);
+const db = new Orm();
 
 app.use(parser.urlencoded({ extended: true }));
 app.use(parser.json());
@@ -16,15 +15,9 @@ app.use(parser.text());
 app.use(logger('dev'));
 
 app.use(express.static(path.join(__dirname, '../../dist')));
-app.use('/api', dataRoutes(db));
+app.use('/api', apiRoutes(db));
 
-function listen() {
-  app.listen(port, () => {
-    console.log(`listening on port ${port}`);
-    console.log(`https://localhost:${port}`);
-  });
-}
-
-scraper.scrape()
-  .then(() => listen());
-
+app.listen(port, () => {
+  console.log(`listening on port ${port}`);
+  console.log(`localhost:${port}`);
+});

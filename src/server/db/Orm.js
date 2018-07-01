@@ -1,9 +1,9 @@
 // database orm constructor
 // extends Scrapper and contains mongo models
 const models = require('../models');
-const Scraper = require('../scripts/Scraper');
+const Scraper = require('../aux/Scraper');
 
-class Orm extends Scraper {
+module.exports = class Orm extends Scraper {
   constructor() {
     super();
     Object.keys(models).forEach((model) => {
@@ -24,7 +24,7 @@ class Orm extends Scraper {
         {
           limit: 25,
           skip: 0,
-          sort: { created: -1 },
+          sort: { created: 1 },
         }
       )
         .populate('notes')
@@ -34,8 +34,5 @@ class Orm extends Scraper {
         })
     ));
   }
-}
-
-const orm = new Orm();
-orm.getArticles();
+};
 

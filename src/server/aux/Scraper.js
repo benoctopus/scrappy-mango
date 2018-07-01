@@ -2,19 +2,20 @@ const axios = require('axios');
 const cherio = require('cherio');
 
 module.exports = class Scraper {
-  constructor(db, url = 'http://www.echojs.com') {
-    this.url = url;
-    this.db = db;
+  constructor() {
+    this.oldReddit = 'https://old.reddit.com/r/';
+    this.newReddit = 'https://reddit.com/r/';
   }
-  async scrape(url = this.url) {
+  async scrape(subReddit = 'popular') {
     try {
-      const dom = await this.getDom(url);
-      await this.parseDOM(cherio.load(dom));
+      const dom = await this.getDom(subReddit);
+      await this.parseDOM(cherio.load(dom), subReddit);
     } catch (err) {
       throw new Error(`${err}\nScrape failed, Exiting with code 1`);
     }
   }
-  getDom(url) {
+  getDom(subReddit) {
+    const url = this.oldReddit + subReddit;
     return new Promise((resolve) => {
       axios.get(url)
         .then((res) => {
@@ -25,9 +26,9 @@ module.exports = class Scraper {
         });
     });
   }
-  parseDOM($) {
+  parseDOM($, subReddit) {
     return new Promise((resolve) => {
-      $('article h2').each((i, element) => {
+      $('.top-matter > .title').each((i, element) => {
         const result = {};
         result.title = $(element)
           .children('a')
@@ -35,15 +36,17 @@ module.exports = class Scraper {
         result.link = $(element)
           .children('a')
           .attr('href');
-        this.db.Article.create(result)
+        result.subReddit = subReddit;
+        this.Article.create(result)
           .then((dbArticle) => {
-            console.log(dbArticle);
+            // console.log(dbArticle);
           })
           .catch((err) => {
-            if (err) throw new Error(err);
+            // if (err) throw new Error(err);
+            // console.log(result);
           });
       });
-      resolve('Scrape Successful');
+      resolve();
     });
   }
 };
