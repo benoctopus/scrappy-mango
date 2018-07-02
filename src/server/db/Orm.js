@@ -9,8 +9,9 @@ module.exports = class Orm extends Scraper {
     Object.keys(models).forEach((model) => {
       this[model] = models[model];
     });
-    this.scrape();
+    this.scrapeToDb();
   }
+
   getArticles(subReddit = 'popular', offset = 0) {
     const offsetStr = offset ? `${offset} off` : '';
     return new Promise(resolve => (
@@ -36,5 +37,27 @@ module.exports = class Orm extends Scraper {
         })
     ));
   }
+
+  storeArticles(list = []) {
+    if (Array.isArray(list)) {
+      list.forEach(article => 
+        this/
+      )
+      this.Article.insertMany(list)
+        .then(data => console.log(`inserted ${list.length} documents`, data));
+      // .catch(err => console.log(err));
+    } else {
+      throw new Error('method store articles only accepts argument of type Array');
+    }
+  }
+
+  scrapeToDb(subreddit = 'popular', start = null, dir = 'after') {
+    this.scrape(subreddit, start, dir)
+      .then(articles => (
+        this.storeArticles(articles)
+      ));
+  }
+  // TODO: scrape to db method
+  // TODO: scrape more method(s)
 };
 

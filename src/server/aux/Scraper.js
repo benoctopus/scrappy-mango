@@ -6,15 +6,13 @@ module.exports = class Scraper {
     this.oldReddit = 'https://old.reddit.com/r/';
     this.newReddit = 'https://reddit.com';
   }
-  async scrape(subReddit = 'popular') {
-    try {
-      const dom = await this.getDom(subReddit);
-      await this.parseDOM(cherio.load(dom), subReddit);
-    } catch (err) {
-      throw new Error(`${err}\nScrape failed, Exiting with code 1`);
-    }
+  async scrape(subReddit = 'popular', start = null, dir = 'after') {
+    const dom = await this.getDOM(subReddit);
+    const articles = await this.parseDOM(cherio.load(dom), subReddit);
+    return articles;
   }
-  getDom(subReddit) {
+
+  getDOM(subReddit) {
     const url = this.oldReddit + subReddit;
     return new Promise((resolve) => {
       axios.get(url)
@@ -26,31 +24,25 @@ module.exports = class Scraper {
         });
     });
   }
+
   parseDOM($, subReddit) {
     return new Promise((resolve) => {
+      const articles = [];
       $('.thing').each((i, element) => {
         const result = {};
         const pid = $(element).attr('id');
+
+        result.subReddit = subReddit;
         result.pid = pid.replace(/thing_/g, '');
         result.timestamp = $(element).attr('data-timestamp');
-        result.title = $(`#${pid} .title > a`)
-          .text();
-        result.link = $(`#${pid} .title > a`)
-          .attr('href');
+        result.title = $(`#${pid} .title > a`).text();
+        result.link = $(`#${pid} .title > a`).attr('href');
         if (result.link.includes('/r/')) {
           result.link = this.newReddit + result.link;
         }
-        result.subReddit = subReddit;
-        this.Article.create(result)
-          .then((dbArticle) => {
-            console.log(dbArticle);
-          })
-          .catch((err) => {
-            // if (err) throw new Error(err);
-            console.log(`dubplicate key: ${result.pid}`);
-          });
+        articles.push(result);
       });
-      resolve();
+      resolve(articles);
     });
   }
 };
