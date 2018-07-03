@@ -4,7 +4,7 @@ function routes(db) {
   // article and note initial get
   router.get('/', (req, res) => {
     console.log('hit /');
-    db.getArticles()
+    db.getArticles(req.query.sub, req.query.offset)
       .then(data => res.json(data));
   });
   // new note route

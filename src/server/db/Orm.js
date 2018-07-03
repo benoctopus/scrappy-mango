@@ -9,55 +9,103 @@ module.exports = class Orm extends Scraper {
     Object.keys(models).forEach((model) => {
       this[model] = models[model];
     });
+    this.getSubReddits();
     this.scrapeToDb();
   }
 
   getArticles(subReddit = 'popular', offset = 0) {
-    const offsetStr = offset ? `${offset} off` : '';
-    return new Promise(resolve => (
-      this.Article.find(
-        { subReddit },
-        [
-          'pid',
-          'title',
-          'link',
-          'subReddit',
-          'created'
-        ],
-        {
-          limit: 25,
-          skip: 0,
-          sort: { created: 1 },
-        }
-      )
-        .populate('notes')
-        .then(articles => resolve(articles))
-        .catch((err) => {
-          // this.scraper.scrape(subReddit + !!offset ?  )
-        })
-    ));
+    return new Promise((resolve) => {
+      const get = () => this.countArticles(subReddit)
+        .then((count) => {
+          console.log(count);
+          if (count >= (offset + 1) * 25) {
+            this.Article.find(
+              { subReddit },
+              [
+                'pid',
+                'title',
+                'link',
+                'subReddit',
+                'created'
+              ],
+              {
+                limit: 25,
+                skip: offset * 25,
+                sort: { created: -1 },
+              }
+            )
+              .populate('notes')
+              .then((articles) => {
+                resolve(articles);
+                console.log(JSON.stringify(articles, null, 2));
+              });
+          } else {
+            console.log('not found, scraping');
+            this.scrapeToDb(subReddit)
+              .then(() => get());
+          }
+        });
+      get();
+    });
   }
 
   storeArticles(list = []) {
-    if (Array.isArray(list)) {
-      list.forEach(article => 
-        this/
-      )
-      this.Article.insertMany(list)
-        .then(data => console.log(`inserted ${list.length} documents`, data));
-      // .catch(err => console.log(err));
-    } else {
-      throw new Error('method store articles only accepts argument of type Array');
-    }
+    return new Promise((resolve) => {
+      if (Array.isArray(list)) {
+        list.forEach((article, index) => {
+          const i = index;
+          this.Article.create(article)
+            .then(() => {
+              if (i === list.length - 1) {
+                console.log('storing scraped articles complete');
+                resolve();
+              }
+            })
+            .catch((err) => {
+              // console.log(`article ${article.pid} ${article.subReddit} already stored`);
+              // throw (err);
+              if (i === list.length - 1) {
+                console.log('storing scraped articles complete');
+                resolve();
+              }
+            });
+        });
+      } else {
+        throw new Error('method storeArticles only accepts argument of type Array');
+      }
+    });
   }
 
-  scrapeToDb(subreddit = 'popular', start = null, dir = 'after') {
-    this.scrape(subreddit, start, dir)
+  countArticles(subReddit) {
+    return this.Article.count({ subReddit });
+  }
+
+  findTrailingArticle(subReddit = 'popular', backwards = false) {
+    return new Promise(resolve =>
+      this.Article.findOne({ subReddit })
+        .sort({ created: -1 })
+        .then(article => resolve(article.pid))
+        .catch(() => resolve(null)));
+  }
+
+  async scrapeToDb(subReddit = 'popular', backwards = false) {
+    const start = await this.findTrailingArticle(subReddit, backwards);
+    console.log('start', start);
+    console.log(subReddit);
+    let dir = null;
+    if (start) {
+      dir = backwards ? 'before' : 'after';
+    }
+    await this.scrape(subReddit, start, dir)
       .then(articles => (
         this.storeArticles(articles)
       ));
   }
-  // TODO: scrape to db method
-  // TODO: scrape more method(s)
+
+  async getSubReddits() {
+    console.log('getsubreddits');
+    this.scrapeSubReddits()
+      .then(subs => console.log(subs));
+  }
 };
 
