@@ -22,7 +22,7 @@ class NavbarWrapper extends Component {
             </h1>
           </Navbar.Brand>
         <div id="image-div">
-          <img src={menuIcon} />
+          {/* <img src={menuIcon} /> */}
         </div>
       </header>
     )
