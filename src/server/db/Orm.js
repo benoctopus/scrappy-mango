@@ -49,15 +49,15 @@ module.exports = class Orm extends Scraper {
     });
   }
 
-  storeArticles(list = []) {
+  store(list = [], model = this.Article) {
     return new Promise((resolve) => {
       if (Array.isArray(list)) {
         list.forEach((article, index) => {
           const i = index;
-          this.Article.create(article)
+          model.create(article)
             .then(() => {
               if (i === list.length - 1) {
-                console.log('storing scraped articles complete');
+                console.log('storing scraped items complete');
                 resolve();
               }
             })
@@ -65,13 +65,13 @@ module.exports = class Orm extends Scraper {
               // console.log(`article ${article.pid} ${article.subReddit} already stored`);
               // throw (err);
               if (i === list.length - 1) {
-                console.log('storing scraped articles complete');
+                console.log('storing scraped items complete');
                 resolve();
               }
             });
         });
       } else {
-        throw new Error('method storeArticles only accepts argument of type Array');
+        throw new Error('method store only accepts argument of type Array');
       }
     });
   }
@@ -98,14 +98,33 @@ module.exports = class Orm extends Scraper {
     }
     await this.scrape(subReddit, start, dir)
       .then(articles => (
-        this.storeArticles(articles)
+        this.store(articles)
       ));
   }
 
-  async getSubReddits() {
-    console.log('getsubreddits');
-    this.scrapeSubReddits()
-      .then(subs => console.log(subs));
+  getSubReddits() {
+    let subReddits = [];
+    let { scrapeSubReddits } = this;
+    scrapeSubReddits = scrapeSubReddits.bind(this);
+
+    async function asyncHelper(reso, count = 10, lastSub = null) {
+      console.log(count);
+      if (count < 1) {
+        console.log('subreddit scrape complete');
+        reso(subReddits);
+        return;
+      }
+
+      const subs = await scrapeSubReddits(lastSub);
+      subReddits = [...subReddits, ...subs];
+      const newCount = count - 1;
+      const newLastSub = subs[subs.length - 1].rid;
+      asyncHelper(reso, newCount, newLastSub);
+    }
+
+    new Promise(resolve => (
+      asyncHelper(resolve)
+    )).then(finalSubs => this.store(finalSubs, this.SubReddit));
   }
 };
 

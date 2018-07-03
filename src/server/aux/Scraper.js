@@ -36,10 +36,13 @@ module.exports = class Scraper {
       const results = [];
       $('.thing').each((i, element) => {
         const result = {};
+
         if (getSubs) {
           const rid = $(element).attr('id');
-          result.name = $(`#${rid} .title`).text().split(':')[0].replace(/r\//g, '');
+          result.name = $(`#${rid} .title`).text()
+            .split(':')[0].replace(/r\//g, '');
           result.rid = rid.replace(/thing_/g, '');
+          // console.log(result);
         } else {
           const pid = $(element).attr('id');
           result.subReddit = subReddit;
@@ -57,15 +60,13 @@ module.exports = class Scraper {
     });
   }
 
-  async scrapeSubReddits() {
-    let lastSub = '';
-    let url = this.subRedditUrl
+  async scrapeSubReddits(lastSub) {
+    let url = this.subRedditUrl;
     console.log('scraping the subs');
-    url += lastSub ? `&after${lastSub}` : '';
+    url += lastSub ? `&after=${lastSub}` : '';
     console.log('sub url', url);
     const dom = await this.getDOM(url);
     const subReddits = await this.parseDOM(cherio.load(dom), null, true);
-    lastSub = subReddits[subReddits.length - 1].rid;
     return subReddits;
   }
 };
