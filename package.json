@@ -28,7 +28,6 @@
     ]
   },
   "dependencies": {
-    "autoprefixer": "^8.5.0",
     "axios": "^0.18.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -49,7 +48,6 @@
     "react": "^16.3.1",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.3.1",
-    "react-lazy-import": "^0.2.1",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",

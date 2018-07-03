@@ -12,7 +12,6 @@ module.exports = class Scraper {
     let url = `${this.oldReddit}/${subReddit}/?limit=100`;
     if (start) {
       url = `${url}&${dir}=${start}`;
-      console.log(url);
     }
     const dom = await this.getDOM(url);
     const articles = await this.parseDOM(cherio.load(dom), subReddit);
@@ -42,11 +41,9 @@ module.exports = class Scraper {
           result.name = $(`#${rid} .title`).text()
             .split(':')[0].replace(/r\//g, '');
           result.rid = rid.replace(/thing_/g, '');
-          // console.log(result);
         } else {
           const pid = $(element).attr('id');
           const image = $(`#${pid} img`).attr('src');
-          console.log(image);
           result.subReddit = subReddit;
           result.pid = pid.replace(/thing_/g, '');
           result.timestamp = $(element).attr('data-timestamp');
@@ -67,9 +64,7 @@ module.exports = class Scraper {
 
   async scrapeSubReddits(lastSub) {
     let url = this.subRedditUrl;
-    console.log('scraping the subs');
     url += lastSub ? `&after=${lastSub}` : '';
-    console.log('sub url', url);
     const dom = await this.getDOM(url);
     const subReddits = await this.parseDOM(cherio.load(dom), null, true);
     return subReddits;

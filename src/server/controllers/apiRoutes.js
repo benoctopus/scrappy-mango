@@ -7,6 +7,7 @@ function routes(db) {
   });
 
   router.get('/subreddits', (req, res) => {
+    console.log('offset', req.query.offset);
     db.getSubReddits(req.params.offset)
       .then(subReddits => res.json(subReddits));
   });

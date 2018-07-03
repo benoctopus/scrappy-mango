@@ -66,7 +66,7 @@ class SideBarWrapper extends Component {
         <ListGroup>
           <ListGroupItem >
             <div id="search-bar" >
-              <label htmlFor='search'>Search</label>
+              <label htmlFor='search'>Filter</label>
               <input 
                 id="search" 
                 onChange={event => this.handleSearch(event)}

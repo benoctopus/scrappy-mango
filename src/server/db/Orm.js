@@ -22,7 +22,6 @@ module.exports = class Orm extends Scraper {
     return new Promise((resolve) => {
       const get = () => this.countArticles(subReddit)
         .then((count) => {
-          console.log(count);
           if (count >= (offset + 1) * 25) {
             this.Article.find(
               { subReddit },
@@ -42,7 +41,6 @@ module.exports = class Orm extends Scraper {
               .populate('notes')
               .then((articles) => {
                 resolve(articles);
-                console.log(JSON.stringify(articles, null, 2));
               });
           } else {
             console.log('not found, scraping');
@@ -59,6 +57,9 @@ module.exports = class Orm extends Scraper {
       if (offset === 10) {
         resolve(false);
       }
+      if (this.loading) {
+        resolve({ loading: this.loading });
+      }
       this.SubReddit.find(
         {},
         [
@@ -66,8 +67,8 @@ module.exports = class Orm extends Scraper {
           'rid',
         ],
         {
-          limit: 100,
-          skip: offset * 100,
+          // limit: 100,
+          // skip: offset * 100,
           sort: { created: -1 },
         },
       ).then(subReddits => resolve(subReddits));
@@ -113,8 +114,6 @@ module.exports = class Orm extends Scraper {
 
   async scrapeToDb(subReddit = 'popular', backwards = false) {
     const start = await this.findTrailingArticle(subReddit, backwards);
-    console.log('start', start);
-    console.log(subReddit);
     let dir = null;
     if (start) {
       dir = backwards ? 'before' : 'after';
@@ -126,8 +125,7 @@ module.exports = class Orm extends Scraper {
   }
 
   scrapeSubRedditsToDb() {
-    const scrapeHelper = (reso, count = 10, lastSub = null) => {
-      console.log(count);
+    const scrapeHelper = (reso, count = 6, lastSub = null) => {
       if (count < 1) {
         reso();
         return;
