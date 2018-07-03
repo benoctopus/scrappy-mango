@@ -18,3 +18,21 @@
 .list-item-link {
   word-wrap: break-word;
 }
+
+#mob {
+  padding: .5rem 1.5rem 2.5rem 1.5rem;
+}
+
+#button-l {
+   position: relative;
+   float: left;
+}
+
+#button-r {
+   position: relative;
+   float: right;
+}
+
+#button-r, #button-l {
+  background-color: rgb(255, 174, 0) 
+}

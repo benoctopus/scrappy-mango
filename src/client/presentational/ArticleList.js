@@ -3,13 +3,13 @@ import propTypes from 'prop-types';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
 
 const ArticleList = props => (
-  <ListGroup id="ArticleList" className="article-list">
+  <ListGroup id="article-list" className="article-list" style={{ listStyle: 'none' }}>
     {props.children}
   </ListGroup>
 );
 
-ArticleList.propTypes = {
-  children: propTypes.array.isRequired,
-};
+// ArticleList.propTypes = {
+//   children: propTypes.array.isRequired,
+// };
 
 export default ArticleList;

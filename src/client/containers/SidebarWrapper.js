@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ListGroup from 'react-bootstrap/lib/ListGroup'
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
+import ProgressBar from 'react-bootstrap/lib/ProgressBar';
 
 @connect(store => store)
 class SideBarWrapper extends Component {
@@ -13,6 +14,7 @@ class SideBarWrapper extends Component {
     }
 
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleSearch(event) {
@@ -21,15 +23,29 @@ class SideBarWrapper extends Component {
     })
   }
 
+  handleClick(event) {
+    const name = event.target.dataset.name;
+    this.props.dispatch({ type: 'CHANGE_SUBREDDIT', payload: { currentSub:  name } })
+  }
+
   getSubReddits() {
     if (this.props.subReddits.status.fetching) {
-      return <ListGroupItem> <h2>Loading...</h2> </ListGroupItem>
+      return <ListGroupItem>
+          <h3>Hold up, Heroku is slow</h3>
+          <ProgressBar striped active now={100} />
+        </ListGroupItem>
     }
+
     return this.state.subReddits
       .filter(sub => sub.name.toLowerCase().includes(this.state.searchTerm))
-      .slice(0, 81)
+      .slice(0, 50)
       .map((sub, i) => (
-      <ListGroupItem key={sub.name + i} data-name={sub.name} className="sub-link">
+      <ListGroupItem 
+        key={sub.name + i} 
+        data-name={sub.name} 
+        className="sub-link"
+        onClick={event => this.handleClick(event)}
+      >
         {sub.name}
       </ListGroupItem>
       ))
@@ -48,8 +64,15 @@ class SideBarWrapper extends Component {
     return (
       <aside id="sidebar-wrapper">
         <ListGroup>
-          <ListGroupItem>
-            <input id="earch" onChange={event => this.handleSearch(event)} />
+          <ListGroupItem >
+            <div id="search-bar" >
+              <label htmlFor='search'>Search</label>
+              <input 
+                id="search" 
+                onChange={event => this.handleSearch(event)}
+                placeholder="Top SubReddits"
+              />
+            </div>
           </ListGroupItem>
           {this.getSubReddits()}
         </ListGroup>

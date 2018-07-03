@@ -1,18 +1,32 @@
 body,  {
-  overflow-x: none;
+  // overflow-x: none;
 }
 
 #page-body {
   display: flex;
   flex-flow: row nowrap;
+  height: 92vh;
+  overflow: hidden;
 }
 
 #article-list {
-  overflow-x: hidden;
-  width: 80% !important
+  // overflow-x: hidden;
+  width: 80vw ;
+  height: inherit;
+  overflow: auto;
 }
 
 #sidebar-wrapper {
-  width: 20%;
+  width: 20vw;
+  height: inherit;
+  overflow: auto;
 }
 
+header {
+  height: 8vh;
+}
+
+#search-bar {
+  display: flex;
+  flex-flow: column nowrap;
+}
