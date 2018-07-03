@@ -8,6 +8,10 @@ import menuIcon from '../icons/menu.svg';
   return store
 })
 class NavbarWrapper extends Component {
+
+  shouldComponentUpdate() {
+    return false;
+  }
   render() {
     return (
       <header id='nav-bar'>

@@ -18,6 +18,8 @@ class SideBarWrapper extends Component {
   }
 
   handleSearch(event) {
+    event.preventDefault()
+    event.stopPropagation()
     this.setState({
       searchTerm: event.target.value.toLowerCase()
     })
@@ -36,7 +38,7 @@ class SideBarWrapper extends Component {
         </ListGroupItem>
     }
 
-    return this.state.subReddits
+    const subs = this.state.subReddits
       .filter(sub => sub.name.toLowerCase().includes(this.state.searchTerm))
       .slice(0, 50)
       .map((sub, i) => (
@@ -48,8 +50,13 @@ class SideBarWrapper extends Component {
       >
         {sub.name}
       </ListGroupItem>
-      ))
-    // return null;
+      ) )
+      if (subs.length < 1) {
+        return <ListGroupItem>{'nothing here :{'}</ListGroupItem>;
+      }
+      else {
+        return subs;
+      }
   }
 
 
@@ -60,15 +67,24 @@ class SideBarWrapper extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      nextState.subReddits !== this.state.subReddits
+      || nextState.searchTerm !== this.state.searchTerm
+    )
+  }
+
   render() {
     return (
       <aside id="sidebar-wrapper">
         <ListGroup>
-          <ListGroupItem >
+          <ListGroupItem key="search-input">
             <div id="search-bar" >
               <label htmlFor='search'>Filter</label>
               <input 
                 id="search" 
+                autoFocus
+                value={this.state.searchTerm}
                 onChange={event => this.handleSearch(event)}
                 placeholder="Top SubReddits"
               />

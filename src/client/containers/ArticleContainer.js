@@ -32,6 +32,10 @@ class ArticleContainer extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.articles !== nextState.Articles
+  }
+
   handleClick(event) {
     const dir = event.target.dataset.dir;
     if (dir === 'left') {
@@ -69,7 +73,7 @@ class ArticleContainer extends Component {
       return (
         <ArticleList id="article-list">
           <ListGroupItem>
-            <h2 style={{ textAlign: 'center' }}>Scraping...</h2>
+            <h2 style={{ textAlign: 'center' }}>Loading...</h2>
             <ProgressBar striped active now={100} />
           </ListGroupItem>
         </ArticleList>
