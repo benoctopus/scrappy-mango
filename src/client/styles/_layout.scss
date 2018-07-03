@@ -1,0 +1,18 @@
+body,  {
+  overflow-x: none;
+}
+
+#page-body {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+#article-list {
+  overflow-x: hidden;
+  width: 80% !important
+}
+
+#sidebar-wrapper {
+  width: 20%;
+}
+

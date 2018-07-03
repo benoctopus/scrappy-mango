@@ -1,12 +1,15 @@
 import React from 'react';
 import ArticleContainer from './ArticleContainer';
-import Nav from './NavbarWrapper';
+import NavbarWrapper from './NavbarWrapper';
+import SideBarWrapper from './SidebarWrapper';
 
 const PageWrapper = () => (
-  // render() {
   <main id="page-wrapper">
-    <Nav />
-    <ArticleContainer />
+    <NavbarWrapper />
+    <div id="page-body">
+      <ArticleContainer />
+      <SideBarWrapper />
+    </div>
   </main>
 );
 // }
