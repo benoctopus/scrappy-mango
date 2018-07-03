@@ -61,11 +61,14 @@ module.exports = class Orm extends Scraper {
       }
       this.SubReddit.find(
         {},
-        ['name'],
+        [
+          'name',
+          'rid',
+        ],
         {
           limit: 100,
           skip: offset * 100,
-          sort: -1,
+          sort: { created: -1 },
         },
       ).then(subReddits => resolve(subReddits));
     });

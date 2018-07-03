@@ -2,7 +2,6 @@ const router = require('express').Router();
 
 function routes(db) {
   router.get('/articles', (req, res) => {
-    console.log('hit /');
     db.getArticles(req.query.sub, req.query.offset)
       .then(data => res.json(data));
   });

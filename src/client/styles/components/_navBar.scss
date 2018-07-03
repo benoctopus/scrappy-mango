@@ -1,10 +1,36 @@
 #nav-bar {
   margin: 0;
-}
-
-#nav-bar > .container {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  align-items: center;
   margin: 0 0 0 0;
+  padding: .5rem 1rem;
+
+  background: rgb(255, 174, 0);
+  color: white;
+  border-bottom: solid #dfdcdc 2px;
+}
+
+#image-div {
+  width: fit-content;
+  height: fit-content;
+  border-radius: 12px;
+  transition: background-color 300ms;
+  padding: .2rem;
+}
+
+#image-div:hover {
+  background: lighten($color: rgb(255, 174, 0), $amount: 10);
+}
+
+#image-div > img {
+  height: 2rem; 
+  width: 2rem; 
+}
+
+.navbar-brand {
+  margin: 0;
+  padding: 0;
+  height: fit-content;
 }

@@ -15,13 +15,10 @@ export default function reducer(
       return {
         ...state,
         status: {
-          ...state,
-          status: {
-            ...state.status,
-            fetching: true,
-            fetched: false,
-            error: null,
-          }
+          ...state.status,
+          fetching: true,
+          fetched: false,
+          error: null,
         }
       };
     }
@@ -29,14 +26,11 @@ export default function reducer(
     if (action.type === 'FETCH_SUBREDDITS_SUCCESS') {
       return {
         ...state,
-        subReddits: action.payload,
+        subReddits: [...state.subReddits, ...action.payload],
         status: {
-          ...state,
-          status: {
-            ...state.status,
-            fetching: false,
-            fetched: true,
-          }
+          ...state.status,
+          fetching: false,
+          fetched: true,
         }
       };
     }
@@ -46,13 +40,10 @@ export default function reducer(
     return {
       ...state,
       status: {
-        ...state,
-        status: {
-          ...state.status,
-          fetching: false,
-          fetched: false,
-          error: action.payload
-        }
+        ...state.status,
+        fetching: false,
+        fetched: false,
+        error: action.payload
       }
     };
   }

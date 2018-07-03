@@ -11,7 +11,7 @@ class ArticleContainer extends Component {
     };
   }
   componentDidMount() {
-    axios.get('/api/')
+    axios.get('/api/articles')
       .then((res) => {
         console.log('get');
         this.setState({
@@ -32,7 +32,7 @@ class ArticleContainer extends Component {
   }
   render() {
     return (
-      <ArticleList>
+      <ArticleList id="article-list">
         {this.generateList()}
       </ArticleList>
     );

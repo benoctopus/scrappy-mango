@@ -40,6 +40,7 @@
     "classnames": "^2.2.6",
     "es6-promise": "^4.2.4",
     "express": "^4.16.3",
+    "file-loader": "^1.1.11",
     "mongoose": "^5.1.7",
     "morgan": "^1.9.0",
     "node-sass": "^4.9.0",
