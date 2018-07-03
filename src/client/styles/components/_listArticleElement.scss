@@ -1,0 +1,15 @@
+.list-item {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.list-item-text {
+  display: flex;
+  flex-flow: column wrap;
+  padding-left: .5rem;
+}
+
+.list-item-title {
+  font-size: 1rem;
+  word-wrap: break-word;
+}

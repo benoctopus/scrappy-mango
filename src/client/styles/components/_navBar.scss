@@ -1,0 +1,10 @@
+#nav-bar {
+  margin: 0;
+}
+
+#nav-bar > .container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: 0 0 0 0;
+}

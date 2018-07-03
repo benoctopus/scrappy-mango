@@ -1,5 +1,4 @@
 @import url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");
-
-// .article-list {
-//   width: 50vw
-// }
+@import './styles/responsive_fonts';
+@import './styles/components/navBar';
+@import './styles/components/listArticleElement';

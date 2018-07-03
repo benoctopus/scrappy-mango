@@ -4,9 +4,9 @@ import propTypes from 'prop-types';
 
 const ArticleListElement = props => (
   <ListGroupItem
-    aid={props.aid}
     className="list-item"
   >
+    { props.image ? <img src={props.image} alt="post thumbnail" /> : null }
     <div className="list-item-text">
       <h3 className="list-item-title">
         {props.title}
@@ -24,7 +24,7 @@ const ArticleListElement = props => (
 );
 
 ArticleListElement.propTypes = {
-  aid: propTypes.string.isRequired,
+  image: propTypes.string,
   title: propTypes.string.isRequired,
   link: propTypes.string.isRequired,
 };

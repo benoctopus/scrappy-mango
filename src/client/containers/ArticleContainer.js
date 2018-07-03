@@ -25,9 +25,8 @@ class ArticleContainer extends Component {
     }
     return this.state.articles.map(article => (
       <ArticleListElement
-        aid={article._id}
-        title={article.title}
-        link={article.link}
+        {...article}
+        key={article.pid}
       />
     ));
   }
