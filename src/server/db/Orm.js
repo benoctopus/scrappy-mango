@@ -10,7 +10,7 @@ module.exports = class Orm extends Scraper {
       this[model] = models[model];
     });
     this.loading = true;
-    this.getSubReddits()
+    this.scrapeSubRedditsToDb()
       .then(() => {
         console.log('subreddit scrape complete');
         this.loading = false;
@@ -31,7 +31,7 @@ module.exports = class Orm extends Scraper {
                 'title',
                 'link',
                 'subReddit',
-                'created'
+                'image',
               ],
               {
                 limit: 25,
@@ -54,6 +54,23 @@ module.exports = class Orm extends Scraper {
     });
   }
 
+  getSubReddits(offset = 0) {
+    return new Promise((resolve) => {
+      if (offset === 10) {
+        resolve(false);
+      }
+      this.SubReddit.find(
+        {},
+        ['name'],
+        {
+          limit: 100,
+          skip: offset * 100,
+          sort: -1,
+        },
+      ).then(subReddits => resolve(subReddits));
+    });
+  }
+
   store(list = [], model = this.Article) {
     return new Promise((resolve) => {
       if (Array.isArray(list)) {
@@ -66,9 +83,7 @@ module.exports = class Orm extends Scraper {
                 resolve();
               }
             })
-            .catch((err) => {
-              // console.log(`article ${article.pid} ${article.subReddit} already stored`);
-              // throw (err);
+            .catch(() => {
               if (i === list.length - 1) {
                 console.log('storing scraped items complete');
                 resolve();
@@ -107,7 +122,7 @@ module.exports = class Orm extends Scraper {
       ));
   }
 
-  getSubReddits() {
+  scrapeSubRedditsToDb() {
     const scrapeHelper = (reso, count = 10, lastSub = null) => {
       console.log(count);
       if (count < 1) {

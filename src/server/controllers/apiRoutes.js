@@ -1,26 +1,18 @@
 const router = require('express').Router();
 
 function routes(db) {
-  // article and note initial get
-  router.get('/', (req, res) => {
+  router.get('/articles', (req, res) => {
     console.log('hit /');
     db.getArticles(req.query.sub, req.query.offset)
       .then(data => res.json(data));
   });
-  // new note route
-  // router.post('/note/:aid', (req, res) => {
-  //   db.Note.create(req.body)
-  //     .then((note) => {
-  //       db.Article.findOneAndUpdate(
-  //         { _id: req.params.aid },
-  //         { note: note._id },
-  //         { new: true }
-  //       )
-  //         .then(() => {
-  //           res.json(note);
-  //         });
-  //     });
-  // });
+
+  router.get('/subreddits', (req, res) => {
+    db.getSubReddits(req.params.offset)
+      .then(subReddits => res.json(subReddits));
+  });
+
+  // Todo: add new note route
   return router;
 }
 

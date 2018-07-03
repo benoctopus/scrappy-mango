@@ -9,12 +9,12 @@ import Navbar from 'react-bootstrap/lib/Navbar'
 class Nav extends Component {
   render() {
     return (
-      <Navbar id='nav-bar' className='justify-content-center'>
+      <Navbar id='nav-bar'>
         <div/>
           <Navbar.Header>
             <Navbar.Brand>
               <h1>
-                Scrap(e) Mango
+                Scrapp(e) Mango
               </h1>
             </Navbar.Brand>
           </Navbar.Header>
