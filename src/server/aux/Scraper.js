@@ -45,6 +45,8 @@ module.exports = class Scraper {
           // console.log(result);
         } else {
           const pid = $(element).attr('id');
+          const image = $(`#${pid} img`).attr('src');
+          console.log(image);
           result.subReddit = subReddit;
           result.pid = pid.replace(/thing_/g, '');
           result.timestamp = $(element).attr('data-timestamp');
@@ -52,6 +54,9 @@ module.exports = class Scraper {
           result.link = $(`#${pid} .title > a`).attr('href');
           if (result.link.includes('/r/')) {
             result.link = this.newReddit + result.link;
+          }
+          if (image) {
+            result.image = `https:${image}`;
           }
         }
         results.push(result);

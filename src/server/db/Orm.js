@@ -9,7 +9,12 @@ module.exports = class Orm extends Scraper {
     Object.keys(models).forEach((model) => {
       this[model] = models[model];
     });
-    this.getSubReddits();
+    this.loading = true;
+    this.getSubReddits()
+      .then(() => {
+        console.log('subreddit scrape complete');
+        this.loading = false;
+      });
     this.scrapeToDb();
   }
 
@@ -103,28 +108,25 @@ module.exports = class Orm extends Scraper {
   }
 
   getSubReddits() {
-    let subReddits = [];
-    let { scrapeSubReddits } = this;
-    scrapeSubReddits = scrapeSubReddits.bind(this);
-
-    async function asyncHelper(reso, count = 10, lastSub = null) {
+    const scrapeHelper = (reso, count = 10, lastSub = null) => {
       console.log(count);
       if (count < 1) {
-        console.log('subreddit scrape complete');
-        reso(subReddits);
+        reso();
         return;
       }
 
-      const subs = await scrapeSubReddits(lastSub);
-      subReddits = [...subReddits, ...subs];
-      const newCount = count - 1;
-      const newLastSub = subs[subs.length - 1].rid;
-      asyncHelper(reso, newCount, newLastSub);
-    }
+      this.scrapeSubReddits(lastSub)
+        .then((subs) => {
+          this.store(subs, this.SubReddit);
+          const newCount = count - 1;
+          const newLastSub = subs[subs.length - 1].rid;
+          scrapeHelper(reso, newCount, newLastSub);
+        });
+    };
 
-    new Promise(resolve => (
-      asyncHelper(resolve)
-    )).then(finalSubs => this.store(finalSubs, this.SubReddit));
+    return new Promise(resolve => (
+      scrapeHelper(resolve)
+    ));
   }
 };
 
